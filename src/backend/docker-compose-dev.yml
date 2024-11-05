@@ -1,0 +1,20 @@
+services:
+    postgres:
+        extends:
+            file: docker-compose-db.yml
+            service: postgres
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        container_name: app
+        command: sh -c "prisma generate && prisma db push && pymon -c app/main.py"
+        ports:
+            - '3333:3333'
+        volumes:
+            - .:/app
+        environment:
+            DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+        depends_on:
+            - postgres

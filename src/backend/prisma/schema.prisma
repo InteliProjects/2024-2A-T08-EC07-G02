@@ -1,0 +1,30 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider             = "prisma-client-py"
+    recursive_type_depth = 5
+}
+
+model APIKey {
+    cuid       String   @id @default(cuid())
+    key        String   @unique
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+enum PredictResult {
+    FAILURE
+    NORMAL
+    NOT_PROCESSED
+}
+
+model KNR {
+    id         String        @id
+    data       Json
+    prediction PredictResult @default(NOT_PROCESSED)
+    created_at DateTime      @default(now())
+    updated_at DateTime      @updatedAt
+}
